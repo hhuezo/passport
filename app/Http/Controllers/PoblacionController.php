@@ -33,8 +33,10 @@ class PoblacionController extends Controller
             $registro = Poblacion::where('POB_NRO_DUI', '=', $request->get('PDUI'))->count();
             if ($registro == 0) {
 
+                //validando formato de correo
                 if (filter_var($request->get('PCORREO'), FILTER_VALIDATE_EMAIL)) {
 
+                    //validando formato de dui
                     if (preg_match("/^[0-9]{8}-[0-9]{1}$/", $request->get('PDUI')) == 1) {
 
                         //creando token de 6 digitos
@@ -70,12 +72,12 @@ class PoblacionController extends Controller
                         $fotografia->FPO_FECHA_INGRESO = $time->toDateTimeString();
                         $fotografia->save();
 
-                         //creando registro en usuario
-                         $user = new User();
-                         $user->name = $request->get('PNOMBRES').' '.$request->get('PAPELLIDO_PATERNO').' '.$request->get('PAPELLIDO_MATERNO');
-                         $user->username = $request->get('PDUI');
-                         $user->password = Hash::make($TOKEN) ;
-                         $user->save();
+                        //creando registro en usuario
+                        $user = new User();
+                        $user->name = $request->get('PNOMBRES') . ' ' . $request->get('PAPELLIDO_PATERNO') . ' ' . $request->get('PAPELLIDO_MATERNO');
+                        $user->username = $request->get('PDUI');
+                        $user->password = Hash::make($TOKEN);
+                        $user->save();
 
                         $PMENSAJE = 'PRE-REGISTRO DE USUARIO REALIZADO CORRECTAMENTE';
                     } else {
