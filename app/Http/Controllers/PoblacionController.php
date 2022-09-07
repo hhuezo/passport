@@ -29,6 +29,7 @@ class PoblacionController extends Controller
     {
         $PVAL = 0;
         $PMENSAJE = NULL;
+        $PIN = NULL;
         if ($request) {
             $registro = Poblacion::where('POB_NRO_DUI', '=', $request->get('PDUI'))->count();
             if ($registro == 0) {
@@ -40,7 +41,7 @@ class PoblacionController extends Controller
                     if (preg_match("/^[0-9]{8}-[0-9]{1}$/", $request->get('PDUI')) == 1) {
 
                         //creando token de 6 digitos
-                        $TOKEN = rand(100000, 999999);
+                        $PIN = rand(100000, 999999);
                         $time = Carbon::now('America/El_Salvador');
 
                         //creando registro en poblacion
@@ -54,7 +55,7 @@ class PoblacionController extends Controller
                         $poblacion->POB_UGE_DGE_CODIGO = 'MU';
                         $poblacion->POB_UGE_CODIGO = $request->get('PMUNICIPIO');
                         $poblacion->POB_FECHA_DE_NACIMIENTO = $request->get('PFECHA_NACIMIENTO');
-                        $poblacion->POB_PIN = $TOKEN;
+                        $poblacion->POB_PIN = $PIN;
                         $poblacion->POB_SEXO = $request->get('PGENERO');
                         $poblacion->POB_EMAIL = $request->get('PCORREO');
                         $poblacion->POB_ESTADO = 'REG';
@@ -76,7 +77,7 @@ class PoblacionController extends Controller
                         $user = new User();
                         $user->name = $request->get('PNOMBRES') . ' ' . $request->get('PAPELLIDO_PATERNO') . ' ' . $request->get('PAPELLIDO_MATERNO');
                         $user->username = $request->get('PDUI');
-                        $user->password = Hash::make($TOKEN);
+                        $user->password = Hash::make($PIN);
                         $user->save();
 
                         $PMENSAJE = 'PRE-REGISTRO DE USUARIO REALIZADO CORRECTAMENTE';
@@ -93,7 +94,7 @@ class PoblacionController extends Controller
                 $PMENSAJE = 'ESTIMADO USUARIO, LE INFORMAMOS QUE POSEE UN USUARIO CREADO EN LA PÁGINA WEB, PUEDE INGRESAR CON SU USUARIO Y CONTRASEÑA EN NUESTRA APLICACIÓN MÓVIL.';
             }
         }
-        $response = array("val" => $PVAL, "mensaje" =>  $PMENSAJE);
+        $response = array("val" => $PVAL, "mensaje" =>  $PMENSAJE,"pin"=> $PIN);
         return response()->json(
             $response,
             200,
