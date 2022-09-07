@@ -9,13 +9,13 @@ use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PoblacionController extends Controller
 {
 
     public function index()
     {
-
     }
 
     public function create()
@@ -25,7 +25,7 @@ class PoblacionController extends Controller
 
     function format_date($fecha)
     {
-        return substr($fecha,6,4).'-'.substr($fecha,3,2).'-'.substr($fecha,0,2);
+        return substr($fecha, 6, 4) . '-' . substr($fecha, 3, 2) . '-' . substr($fecha, 0, 2);
     }
 
     public function store(Request $request)
@@ -100,7 +100,7 @@ class PoblacionController extends Controller
                 $PMENSAJE = 'ESTIMADO USUARIO, LE INFORMAMOS QUE POSEE UN USUARIO CREADO EN LA PÁGINA WEB, PUEDE INGRESAR CON SU USUARIO Y CONTRASEÑA EN NUESTRA APLICACIÓN MÓVIL.';
             }
         }
-        $response = array("val" => $PVAL, "mensaje" =>  $PMENSAJE,"pin"=> $PIN);
+        $response = array("val" => $PVAL, "mensaje" =>  $PMENSAJE, "pin" => $PIN);
         return response()->json(
             $response,
             200,
@@ -120,26 +120,31 @@ class PoblacionController extends Controller
     {
         $PVAL = 1;
         $PMENSAJE = NULL;
+        $poblacion = NULL;
+        try {
+            $poblacion = Poblacion::findOrFail($id);
 
-        $poblacion = Poblacion::findOrFail($id);
-        if($poblacion)
-        {
             $municipio = UbicacionGeografica::findOrFail($poblacion->POB_UGE_CODIGO);
 
-            $departamento = UbicacionGeografica::where('UGE_CODIGO','=',$municipio->UGE_UGE_CODIGO)->first();
+            $departamento = UbicacionGeografica::where('UGE_CODIGO', '=', $municipio->UGE_UGE_CODIGO)->first();
 
             $poblacion->POB_DEPARTAMENTO = $departamento->ID;
 
-            $fotografia = Fotografia::where('FPO_POB_NRO_DUI','=',$poblacion->POB_NRO_DUI)->first();
+            $fotografia = Fotografia::where('FPO_POB_NRO_DUI', '=', $poblacion->POB_NRO_DUI)->first();
 
             $poblacion->FPO_FOTOGRAFIA = $fotografia->FPO_FOTOGRAFIA;
 
             $PVAL = 0;
             $PMENSAJE = "OK";
+        } catch (ModelNotFoundException $e) {
+            //dd(get_class_methods($e)); // lists all available methods for exception object
+           // dd($e);
+
+           $PMENSAJE = "DATOS NO ENCONTRADOS";
         }
 
 
-        $response = array("val" => $PVAL, "mensaje" =>   $PMENSAJE,"resultado"=>$poblacion);
+        $response = array("val" => $PVAL, "mensaje" =>   $PMENSAJE, "resultado" => $poblacion);
         return response()->json(
             $response,
             200,
