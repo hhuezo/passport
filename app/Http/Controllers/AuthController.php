@@ -21,18 +21,18 @@ class AuthController extends Controller
 
         $validate_data['password'] = Hash::make($request->password);
 
-       // $user = User::create($validate_data);
+        // $user = User::create($validate_data);
 
-       $user = new User();
-       $user->name = $validate_data['name'];
-       $user->username = $validate_data['username'];
-       $user->password = $validate_data['password'];
-       $user->save();
+        $user = new User();
+        $user->name = $validate_data['name'];
+        $user->username = $validate_data['username'];
+        $user->password = $validate_data['password'];
+        $user->save();
 
         $accessToken = $user->createToken('authToken')->accessToken;
 
         return response([
-            'user'=>$user,
+            'user' => $user,
             'accessToken' => $accessToken
         ]);
     }
@@ -44,17 +44,20 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if(!auth()->attempt($login_data))
-        {
+        if (!auth()->attempt($login_data)) {
             return response([
-                "mensaje"=>"usuario y/o contraseña es invalido"
+                'val' => '1',
+                'mensaje' => 'usuario y/o contraseña es invalido',
+                'accessToken' => ''
             ]);
         }
 
         $accessToken = auth()->user()->createToken('authSertrasenToken')->accessToken;
 
         return response([
-            'user' => auth()->user(),
+            'val' => '0',
+            'mensaje' => 'ACCESO EXITOSO',
+            //'user' => auth()->user(),
             'accessToken' => $accessToken
         ]);
     }
