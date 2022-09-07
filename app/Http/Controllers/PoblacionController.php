@@ -25,8 +25,14 @@ class PoblacionController extends Controller
         //
     }
 
+    function format_date($fecha)
+    {
+        return substr($fecha,6,4).'-'.substr($fecha,3,2).'-'.substr($fecha,0,2);
+    }
+
     public function store(Request $request)
     {
+
         $PVAL = 0;
         $PMENSAJE = NULL;
         $PIN = NULL;
@@ -44,6 +50,8 @@ class PoblacionController extends Controller
                         $PIN = rand(100000, 999999);
                         $time = Carbon::now('America/El_Salvador');
 
+                        $fecha_nacimiento = $this->format_date($request->get('PFECHA_NACIMIENTO'));
+
                         //creando registro en poblacion
                         $poblacion = new Poblacion();
                         $poblacion->POB_NRO_DUI = $request->get('PDUI');
@@ -54,7 +62,7 @@ class PoblacionController extends Controller
                         $poblacion->POB_DOMICILIO = $request->get('POB_DOMICILIO');
                         $poblacion->POB_UGE_DGE_CODIGO = 'MU';
                         $poblacion->POB_UGE_CODIGO = $request->get('PMUNICIPIO');
-                        $poblacion->POB_FECHA_DE_NACIMIENTO = $request->get('PFECHA_NACIMIENTO');
+                        $poblacion->POB_FECHA_DE_NACIMIENTO =  $fecha_nacimiento;
                         $poblacion->POB_PIN = $PIN;
                         $poblacion->POB_SEXO = $request->get('PGENERO');
                         $poblacion->POB_EMAIL = $request->get('PCORREO');
