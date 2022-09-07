@@ -27,5 +27,5 @@ Route::resource('poblacion', 'PoblacionController');
 
 
 //ubicaciones geograficas
-Route::get('/departamento', 'UbicacionGeograficaController@get_departamento');
-Route::get('/municipio/{id}', 'UbicacionGeograficaController@get_municipio');
+Route::get('/departamento', 'UbicacionGeograficaController@get_departamento')->middleware('auth:api');
+Route::get('/municipio/{id}', 'UbicacionGeograficaController@get_municipio')->middleware('auth:api');
