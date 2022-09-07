@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Fotografia;
 use App\Poblacion;
+use App\UbicacionGeografica;
 use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -14,10 +15,7 @@ class PoblacionController extends Controller
 
     public function index()
     {
-        $dni = '03544132-0';
-        $formato = preg_match("/^[0-9]{8}-[0-9]{1}$/", $dni);
 
-        return $formato;
     }
 
     public function create()
@@ -118,9 +116,37 @@ class PoblacionController extends Controller
     }
 
 
-    public function edit($id)
+    public function get_poblacion($id)
     {
-        //
+        $PVAL = 1;
+        $PMENSAJE = NULL;
+
+        $poblacion = Poblacion::findOrFail($id);
+        if($poblacion)
+        {
+            $municipio = UbicacionGeografica::findOrFail($poblacion->POB_UGE_CODIGO);
+
+            $departamento = UbicacionGeografica::where('UGE_CODIGO','=',$municipio->UGE_UGE_CODIGO)->first();
+
+            $poblacion->POB_DEPARTAMENTO = $departamento->ID;
+
+            $fotografia = Fotografia::where('FPO_POB_NRO_DUI','=',$poblacion->POB_NRO_DUI)->first();
+
+            $poblacion->FPO_FOTOGRAFIA = $fotografia->FPO_FOTOGRAFIA;
+
+            $PVAL = 0;
+            $PMENSAJE = "OK";
+        }
+
+
+        $response = array("val" => $PVAL, "mensaje" =>   $PMENSAJE,"resultado"=>$poblacion);
+        return response()->json(
+            $response,
+            200,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
+            JSON_UNESCAPED_UNICODE
+        );
+        return $poblacion;
     }
 
 

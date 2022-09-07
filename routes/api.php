@@ -24,7 +24,7 @@ Route::post('/login', 'AuthController@login');
 
 //registro de poblacion
 Route::resource('poblacion', 'PoblacionController');
-
+Route::get('get_poblacion/{id}', 'PoblacionController@get_poblacion')->middleware('auth:api');
 
 //ubicaciones geograficas
 Route::get('/departamento', 'UbicacionGeograficaController@get_departamento');
