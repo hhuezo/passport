@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Fotografia;
 use App\Poblacion;
+use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class PoblacionController extends Controller
 {
@@ -35,9 +37,11 @@ class PoblacionController extends Controller
 
                     if (preg_match("/^[0-9]{8}-[0-9]{1}$/", $request->get('PDUI')) == 1) {
 
+                        //creando token de 6 digitos
                         $TOKEN = rand(100000, 999999);
                         $time = Carbon::now('America/El_Salvador');
-                        //return $TOKEN;
+
+                        //creando registro en poblacion
                         $poblacion = new Poblacion();
                         $poblacion->POB_NRO_DUI = $request->get('PDUI');
                         $poblacion->POB_NOMBRES = $request->get('PNOMBRES');
@@ -58,7 +62,7 @@ class PoblacionController extends Controller
                         $poblacion->POB_CATEGORIA = $request->get('PCATEGORIA');
                         $poblacion->save();
 
-
+                        //creando registro en fotografia
                         $fotografia = new Fotografia();
                         $fotografia->FPO_POB_NRO_DUI = $request->get('PDUI');
                         $fotografia->FPO_FOTOGRAFIA = $request->get('FPO_FOTOGRAFIA');
@@ -66,8 +70,14 @@ class PoblacionController extends Controller
                         $fotografia->FPO_FECHA_INGRESO = $time->toDateTimeString();
                         $fotografia->save();
 
-                        $PMENSAJE = 'PRE-REGISTRO DE USUARIO REALIZADO CORRECTAMENTE';
+                         //creando registro en usuario
+                         $user = new User();
+                         $user->name = $request->get('PNOMBRES').' '.$request->get('PAPELLIDO_PATERNO').' '.$request->get('PAPELLIDO_MATERNO');
+                         $user->username = $request->get('PDUI');
+                         $user->password = Hash::make($TOKEN) ;
+                         $user->save();
 
+                        $PMENSAJE = 'PRE-REGISTRO DE USUARIO REALIZADO CORRECTAMENTE';
                     } else {
                         $PVAL = 1;
                         $PMENSAJE =  'EL NÚMERO DE DUI QUE USTED INTENTA INGRESAR NO TIENE FORMATO VÁLIDO, VERIFIQUE.\n';
