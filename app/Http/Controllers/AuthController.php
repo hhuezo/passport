@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Poblacion;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -54,12 +55,13 @@ class AuthController extends Controller
         }
 
         $accessToken = auth()->user()->createToken('authSertrasenToken')->accessToken;
+        $poblacion = Poblacion::where('POB_NRO_DUI','=',auth()->user()->username)->first();
 
         return response([
             'val' => '0',
             'mensaje' => 'ACCESO EXITOSO',
             'accessToken' => $accessToken,
-            'id' => auth()->user()->id
+            'id' => $poblacion->id
         ]);
     }
 }
