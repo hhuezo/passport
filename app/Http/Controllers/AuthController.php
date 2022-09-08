@@ -54,6 +54,8 @@ class AuthController extends Controller
             ]);
         }
 
+       // return auth()->user()->username;
+
         $accessToken = auth()->user()->createToken('authSertrasenToken')->accessToken;
         $poblacion = Poblacion::where('POB_NRO_DUI','=',auth()->user()->username)->first();
 
@@ -61,7 +63,7 @@ class AuthController extends Controller
             'val' => '0',
             'mensaje' => 'ACCESO EXITOSO',
             'accessToken' => $accessToken,
-            'id' => $poblacion->id
+            'id' => $poblacion->ID
         ]);
     }
 }
