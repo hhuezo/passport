@@ -116,7 +116,7 @@ class PoblacionController extends Controller
     }
 
 
-    public function get_poblacion($id)
+    public function edit($id)
     {
         $PVAL = 1;
         $PMENSAJE = NULL;
@@ -137,8 +137,6 @@ class PoblacionController extends Controller
             $PVAL = 0;
             $PMENSAJE = "OK";
         } catch (ModelNotFoundException $e) {
-            //dd(get_class_methods($e)); // lists all available methods for exception object
-           // dd($e);
 
            $PMENSAJE = "DATOS NO ENCONTRADOS";
         }
@@ -151,7 +149,6 @@ class PoblacionController extends Controller
             ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
             JSON_UNESCAPED_UNICODE
         );
-        return $poblacion;
     }
 
 
