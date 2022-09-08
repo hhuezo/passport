@@ -57,8 +57,8 @@ class AuthController extends Controller
         return response([
             'val' => '0',
             'mensaje' => 'ACCESO EXITOSO',
-            //'user' => auth()->user(),
-            'accessToken' => $accessToken
+            'accessToken' => $accessToken,
+            'id' => auth()->user()->id
         ]);
     }
 }
