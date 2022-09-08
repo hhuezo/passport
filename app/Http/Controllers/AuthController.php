@@ -48,7 +48,8 @@ class AuthController extends Controller
             return response([
                 'val' => '1',
                 'mensaje' => 'usuario y/o contraseña es invalido',
-                'accessToken' => ''
+                'accessToken' => '',
+                'id' => 0
             ]);
         }
 
